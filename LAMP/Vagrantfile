@@ -1,0 +1,50 @@
+VAGRANTFILE_API_VERSION = "2"
+
+nodes = [
+  { hostname: 'LAB-LAMP-01', box: 'generic/centos7', ip: '192.168.1.201' }
+]
+
+unless Vagrant.has_plugin?("vagrant-reload")
+  puts 'Installing vagrant-reload Plugin...'
+  system('vagrant plugin install vagrant-reload')
+end
+
+unless Vagrant.has_plugin?("vagrant-proxyconf")
+  puts 'Installing vagrant-proxyconf Plugin...'
+  system('vagrant plugin install vagrant-proxyconf')
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  nodes.each do |node|
+    config.vm.define node[:hostname] do |node_config|
+      node_config.vm.hostname = node[:hostname]
+      node_config.vm.box = node[:box]
+	  node_config.vm.network "public_network", ip: node[:ip]
+	  #node_config.vm.network "private_network", type: "dhcp"
+      node_config.vm.synced_folder('files/', '/Vagrantfiles', type: 'rsync')
+	  config.vm.provision "shell", path: "scripts/install.sh"
+	  config.vm.provision :reload
+	  config.vm.provision "shell", path: "scripts/lamp.sh"
+	  config.vm.provision "shell", inline: "echo 'INSTALLER: Installation Terminee, Centos 7 LAMP pret a etre utilise !!!'"
+    end
+  end
+  
+  config.vm.provider :vmware_esxi do |esxi|
+    esxi.esxi_hostname = '192.168.1.145'
+    esxi.esxi_username = 'root'
+    esxi.esxi_password = 'P@ssw0rd'
+    esxi.esxi_password = 'F1ch0rg@PM$'
+	esxi.esxi_hostport = 22
+    esxi.esxi_virtual_network = 'VM Network'
+    esxi.esxi_disk_store = 'datastore1'
+	esxi.guest_guestos = 'centos7-64'
+	esxi.resource_pool = '/'
+    esxi.guest_memsize = '8192'
+    esxi.guest_numvcpus = '4'
+    esxi.guest_nic_type = 'VMXNET3'
+    esxi.guest_disk_type = 'thick'
+    esxi.guest_boot_disk_size = 150
+    esxi.guest_virtualhw_version = '14'
+    esxi.guest_custom_vmx_settings = [['vhv.enable','TRUE'], ['floppy0.present','FALSE']]
+  end
+end
