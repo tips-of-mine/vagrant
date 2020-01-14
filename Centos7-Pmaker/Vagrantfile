@@ -1,7 +1,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 nodes = [
-  { hostname: 'LAB-LAMP-01', box: 'generic/centos7', ip: '192.168.1.201' }
+  { hostname: 'LAB-PMAKER-01', box: 'generic/centos7', ip: '192.168.1.201' }
 ]
 
 unless Vagrant.has_plugin?("vagrant-reload")
@@ -24,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node_config.vm.synced_folder('files/', '/Vagrantfiles', type: 'rsync')
 	  config.vm.provision "shell", path: "scripts/install.sh"
 	  config.vm.provision :reload
-	  config.vm.provision "shell", path: "scripts/lamp.sh"
+	  config.vm.provision "shell", path: "scripts/pmaker.sh"
 	  config.vm.provision "shell", inline: "echo 'INSTALLER: Installation Terminee, Centos 7 LAMP pret a etre utilise !!!'"
     end
   end
@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :vmware_esxi do |esxi|
     esxi.esxi_hostname = '192.168.1.145'
     esxi.esxi_username = 'root'
-    esxi.esxi_password = 'P@ssw0rd'
+    esxi.esxi_password = '20-Constructions-16'
 	esxi.esxi_hostport = 22
     esxi.esxi_virtual_network = 'VM Network'
     esxi.esxi_disk_store = 'datastore1'
@@ -43,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     esxi.guest_nic_type = 'VMXNET3'
     esxi.guest_disk_type = 'thick'
     esxi.guest_boot_disk_size = 150
-    esxi.guest_virtualhw_version = '14'
+    esxi.guest_virtualhw_version = '15'
     esxi.guest_custom_vmx_settings = [['vhv.enable','TRUE'], ['floppy0.present','FALSE']]
   end
 end
