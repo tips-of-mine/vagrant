@@ -108,6 +108,7 @@ yum-config-manager --enable remi-php71
 yum install php -y
 yum install php-mysql php-fpm php-opcache php-mysqlnd php-pdo php-gd php-ldap php-odbc php-pear php-xml -y
 yum install php-xmlrpc php-opcache php-mbstring php-soap curl curl-devel php-pear-CAS php-imap php-apcu -y
+yum install php-simplexml php-zlib php-session php-mysqli php-json ph-fileinfo php-cli php-domxml php-openssl -y
 
 echo '.'
 echo '**********************'
